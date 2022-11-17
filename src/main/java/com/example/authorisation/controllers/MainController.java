@@ -8,6 +8,11 @@ public class MainController {
 
     @GetMapping("/")
     public String home(){
-        return "authorisationModule/authorisation";
+        return "mainPage/home";
+//        return "authorisationModule/authorisation";
+    }
+    @GetMapping("/test")
+    public String test(){
+       return "authorisationModule/authorisation";
     }
 }
