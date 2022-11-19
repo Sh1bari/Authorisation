@@ -14,16 +14,15 @@
             url: '/authorisationFormLogin',
             type: 'get',
             success: function(data) {
-                var authorisationForm = document.getElementById("showAuthorisation")
-                authorisationForm.innerHTML = data
+                $('#showAuthorisation')[0].innerHTML = data
             }
         });
-        document.getElementById("changeAuthorisationBtn").setAttribute("onclick", "closeAuthorisationForm();")
+        $('#changeAuthorisationBtn').attr("onclick", "closeAuthorisationForm();")
     }
 
     function closeAuthorisationForm(){
-        document.getElementById("changeAuthorisationBtn").setAttribute("onclick", "showAuthorisationFormLogin();")
-        document.getElementById("showAuthorisation").innerHTML = ""
+        $('#changeAuthorisationBtn').attr("onclick", "showAuthorisationFormLogin();")
+        $('#showAuthorisation')[0].innerHTML = ""
     }
 
     function add_user(){
@@ -36,18 +35,28 @@
             data: JSON.stringify({
                 login: $('#login').val(),
                 password: $('#password').val()
-            })
+            }),
+            success: function (data){
+                if(data.loginAnswer === "denied"){
+                    $('#alreadyExist')[0].innerHTML = "Такой пользователь уже существует"
+                } else {
+                    $('#alreadyExist')[0].innerHTML = ""
+                    $('#login').val('')
+                    $('#password').val('')
+                    $('#success')[0].innerHTML="Вы успешно добавили пользователя"
+                    setTimeout(function() {
+                        showAuthorisationFormLogin()
+                    }, 3000);
+                }
+            }
         })
-        document.getElementById("login").value= "";
-        document.getElementById("password").value= "";
     }
     function showAuthorisationFormSignup(){
         $.ajax({
             url: '/authorisationFormSignup',
             type: 'get',
             success: function(data) {
-                var authorisationForm = document.getElementById("showAuthorisation")
-                authorisationForm.innerHTML = data
+                $('#showAuthorisation')[0].innerHTML = data
             }
         });
     }
@@ -59,19 +68,20 @@
             cache: false,
             contentType: 'application/json',
             data: JSON.stringify({
-                login: $('#login').val()
+                login: $('#login').val(),
+                password: $('#password').val()
             }),
             success: function (data){
-                if(data.exceptionName === "Неверный логин"){
-                    document.getElementById("incorrectLogin").innerHTML = "Неверный логин"
-                    document.getElementById("incorrectPassword").innerHTML = ""
-                }else{
-                    document.getElementById("incorrectLogin").innerHTML = ""
-                    if (document.getElementById("password").value === data[0].password){
-                        document.getElementById("incorrectPassword").innerHTML = ""
-                    }else{
-                        document.getElementById("incorrectPassword").innerHTML = "Неверный пароль"
 
+                if(data.loginAnswer === "incorrect login"){
+                    $('#incorrectLogin')[0].innerHTML="Неверный логин"
+                    $('#incorrectPassword')[0].innerHTML = ""
+                } else{
+                    $('#incorrectLogin')[0].innerHTML=""
+                    if(data.passwordAnswer === "incorrect password"){
+                        $('#incorrectPassword')[0].innerHTML = "Неверный пароль"
+                    }else{
+                        $('#incorrectPassword')[0].innerHTML = ""
                     }
                 }
             }

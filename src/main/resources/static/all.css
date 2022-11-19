@@ -3,6 +3,9 @@
 .center{
     text-align: center;
 }
+.green{
+    color: forestgreen;
+}
 
 body {
     background: #456;
