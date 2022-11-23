@@ -15,7 +15,7 @@ public class UserAuthorisation {
 
     private String password;
 
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "login")
     private List<UserNotices> notices = new ArrayList<>();
 

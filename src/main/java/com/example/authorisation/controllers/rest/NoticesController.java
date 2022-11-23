@@ -17,14 +17,13 @@ public class NoticesController {
 
 
     @PostMapping ("/api/v1/addNotice")
-    public Object addUser(@RequestBody UserNotices user, HttpSession httpSession){
+    public void addUser(@RequestBody UserNotices user, HttpSession httpSession){
         if(httpSession.getAttribute("username")!=null) {
             user.setId(0);
             UserAuthorisation user1 = userAuthorisationRepository.findByLogin(httpSession.getAttribute("username").toString());
             user1.getNotices().add(user);
             userAuthorisationRepository.save(user1);
         }
-        return null;
     }
 
     @GetMapping("/api/v1/test")
