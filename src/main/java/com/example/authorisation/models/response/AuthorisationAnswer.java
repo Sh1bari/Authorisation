@@ -1,4 +1,4 @@
-package com.example.authorisation.models;
+package com.example.authorisation.models.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

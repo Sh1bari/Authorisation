@@ -1,28 +1,28 @@
 package com.example.authorisation.controllers.rest;
-import com.example.authorisation.models.AuthorisationAnswer;
-import com.example.authorisation.models.UserAuthorisation;
+import com.example.authorisation.models.response.AuthorisationAnswer;
+import com.example.authorisation.models.entity.UserAuthorisation;
 import com.example.authorisation.repo.UserAuthorisationRepository;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.example.authorisation.services.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpSession;
 
 
 @RestController
 public class AuthorisationController {
-    private final UserAuthorisationRepository userAuthorisationRepository;
+    @Autowired
+    private UserAuthorisationRepository userAuthorisationRepository;
 
-    public AuthorisationController(UserAuthorisationRepository userAuthorisationRepository) {
-        this.userAuthorisationRepository = userAuthorisationRepository;
-    }
+    @Autowired
+    private ServiceImpl service;
 
     @PostMapping( "/authorisation/user/add")
     public Object authorisationAdd(@RequestBody UserAuthorisation user){
         var authorisationAnswer = new AuthorisationAnswer();
-        String login = user.getLogin();
-        if(!userAuthorisationRepository.existsByLogin(login)){
-            user.setId(0);
-            userAuthorisationRepository.save(user);
+
+        if (service.saveUser(user)){
             authorisationAnswer.setLoginAnswer("success");
         }else{
             authorisationAnswer.setLoginAnswer("denied");
@@ -30,7 +30,7 @@ public class AuthorisationController {
         return authorisationAnswer;
     }
     @PostMapping("/authorisation/user/login")
-    public Object authorisationLogin(@RequestBody UserAuthorisation user){
+    public Object authorisationLogin(@RequestBody UserAuthorisation user, HttpSession httpSession){
         var authorisationAnswer = new AuthorisationAnswer();
         String login = user.getLogin();
         String password = user.getPassword();
@@ -43,6 +43,7 @@ public class AuthorisationController {
                 authorisationAnswer.setPasswordAnswer("incorrect password");
             }else{
                 authorisationAnswer.setPasswordAnswer("correct password");
+                httpSession.setAttribute("username", user.getLogin());
             }
         }
         return authorisationAnswer;
