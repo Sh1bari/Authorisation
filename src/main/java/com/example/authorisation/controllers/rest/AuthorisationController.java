@@ -48,6 +48,10 @@ public class AuthorisationController {
         }
         return authorisationAnswer;
     }
+    @GetMapping("/authorisation/user/logout")
+    public void logout(HttpSession httpSession){
+        httpSession.setAttribute("username", null);
+    }
 
     @RequestMapping (method = RequestMethod.GET, value = "/authorisationFormLogin")
     public ModelAndView showFormLogin(){
